@@ -1,43 +1,54 @@
-from collections import deque
-from queue import PriorityQueue
 from sys import stdin
 
-def is_stack(values_in_f: list[int], values_out_f: list[int]) -> bool:
-    return values_out_f[::-1] == values_in_f
+def salida_valida_cola(values: list, out: int) -> bool:
+    pude = False
+    if values[0] == out:
+        values.remove(values[0])
+        pude = True
+    return pude
 
-def is_queue(values_in_f: list[int], values_out_f: list[int]) -> bool:
-    return values_out_f == values_in_f
-
-def is_priority_queue(values_in_f: list[int], values_out_f: list[int]) -> bool:
-    return values_out_f == values_in_f
+def salida_valida_pila(values: list, out: int) -> bool:
+    pude = False
+    ultimo = values.pop()
+    if ultimo == out:
+        pude = True
+    return pude
 
 msg = ['stack','queue','priority queue']
 
 for linea in stdin:
+    estructuras = [True] * 3
+
+    v_in = {
+        'pila': [],
+        'cola': [],
+        'p_cola': []
+    }
+
     casos = int(linea)
-    values_in = []
-    values_out = []
-    for I in range(0,casos):
-        cmd_valor = input().split(' ')
-        if (cmd_valor[0] == '1'):
-            values_in.append(int(cmd_valor[1]))
-        elif (cmd_valor[0] == '2'):
-            values_out.append(int(cmd_valor[1]))
-    
-    in_to_compare = values_in[0:len(values_out)]
-    
-    in_to_comp_sort = values_in.copy()
-    in_to_comp_sort.sort(reverse=True)
-    
-    estructura = [
-        is_stack(in_to_compare,values_out),
-        is_queue(in_to_compare,values_out),
-        is_priority_queue(in_to_comp_sort[0:len(values_out)],values_out)
-    ]
-    
-    if estructura.count(True) > 1:
+
+    for I in range(casos):
+        instruccion, value = input().split(' ')
+        value = int(value)
+        instruccion = int(instruccion)
+
+        if instruccion == 1:
+            for estructura in v_in:
+                v_in[estructura].append(value)
+        else:
+            v_in['p_cola'].sort(reverse=True)
+
+            if estructuras[0] == True:
+                estructuras[0] = estructuras[0] and salida_valida_pila(v_in['pila'],value)
+            if estructuras[1] == True:
+                estructuras[1] = estructuras[1] and salida_valida_cola(v_in['cola'],value)
+            if estructuras[2] == True:
+                estructuras[2] = estructuras[2] and salida_valida_cola(v_in['p_cola'],value)
+
+    if estructuras.count(True) > 1:
         print('not sure')
-    elif (estructura.count(True) == 0):
+    elif (estructuras.count(True) == 0):
         print('impossible')
     else:
-        print(msg[estructura.index(True)])
+        print(msg[estructuras.index(True)])
+print('\n')
