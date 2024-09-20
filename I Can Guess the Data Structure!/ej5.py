@@ -1,54 +1,76 @@
 from sys import stdin
 
-def salida_valida_cola(values: list, out: int) -> bool:
-    pude = False
-    if values[0] == out:
-        values.remove(values[0])
-        pude = True
-    return pude
+def is_valid_queue(inside: list, v_out:int)->bool:
+    if (inside[0] == v_out):
+        inside.pop(0)
+        return True
+    return False
 
-def salida_valida_pila(values: list, out: int) -> bool:
-    pude = False
-    ultimo = values.pop()
-    if ultimo == out:
-        pude = True
-    return pude
+def is_valid_stack(inside: list, v_out:int)->bool:
+    if (inside[-1] == v_out):
+        inside.pop()
+        return True
+    return False
 
-msg = ['stack','queue','priority queue']
+def is_valid_p_queue(inside: list, v_out:int)->bool:
+    m = max_index(inside)
+    if (inside[m] == v_out):
+        inside.pop(m)
+        return True
+    return False
+
+def max_index(arr: list):
+    maximo = -1
+    indice = -1
+    for indx in range(len(arr)):
+        if (arr[indx] > maximo):
+            maximo = arr[indx]
+            indice = indx
+    return indice
+    
+
+msg = ['queue','stack','priority queue']
+
+comparator = ''
+
+
 
 for linea in stdin:
-    estructuras = [True] * 3
-
-    v_in = {
-        'pila': [],
-        'cola': [],
-        'p_cola': []
-    }
-
     casos = int(linea)
 
-    for I in range(casos):
-        instruccion, value = input().split(' ')
-        value = int(value)
-        instruccion = int(instruccion)
+    estructura = [True] * 3
 
-        if instruccion == 1:
-            for estructura in v_in:
-                v_in[estructura].append(value)
+    contador = 3
+
+    structs = [[],[],[]]
+
+    I = 0
+
+    while (I < casos and contador > 0):
+        cmd, valor = input().split(' ')
+        cmd = int(cmd)
+        valor = int(valor)
+        if cmd == 1:
+            for K in range(3):
+                if estructura[K]: structs[K].append(valor)
         else:
-            v_in['p_cola'].sort(reverse=True)
+            estructura = [
+                estructura[0] and is_valid_queue(structs[0],valor),
+                estructura[1] and is_valid_stack(structs[1],valor),
+                estructura[2] and is_valid_p_queue(structs[2],valor)
+            ]
+            contador = estructura.count(True)
 
-            if estructuras[0] == True:
-                estructuras[0] = estructuras[0] and salida_valida_pila(v_in['pila'],value)
-            if estructuras[1] == True:
-                estructuras[1] = estructuras[1] and salida_valida_cola(v_in['cola'],value)
-            if estructuras[2] == True:
-                estructuras[2] = estructuras[2] and salida_valida_cola(v_in['p_cola'],value)
+        I+=1
+    
+    for J in range(casos - I):
+        input()
 
-    if estructuras.count(True) > 1:
-        print('not sure')
-    elif (estructuras.count(True) == 0):
-        print('impossible')
+    if contador > 1:
+        comparator += 'not sure\n'
+    elif contador == 0:
+        comparator += 'imposible\n'
     else:
-        print(msg[estructuras.index(True)])
-print('\n')
+        comparator += msg[estructura.index(True)]+'\n'
+
+print(comparator)
