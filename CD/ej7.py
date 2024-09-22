@@ -6,8 +6,10 @@ I = 0
 
 mensaje = ''
 
-while(I<len(lineas) and int(lineas[I].replace(' ','')) != 0):
+while True:
     jack_cant, jill_cant = map(int,lineas[I].split())
+    if (jack_cant == 0 and jill_cant == 0):
+        break
     I+=1
 
     jack_idx = I
