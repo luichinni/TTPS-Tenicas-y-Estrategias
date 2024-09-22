@@ -55,9 +55,9 @@ for linea in stdin:
                 if estructura[K]: structs[K].append(valor)
         else:
             estructura = [
-                estructura[0] and is_valid_queue(structs[0],valor),
-                estructura[1] and is_valid_stack(structs[1],valor),
-                estructura[2] and is_valid_p_queue(structs[2],valor)
+                estructura[0] and len(structs[0])>0 and is_valid_queue(structs[0],valor),
+                estructura[1] and len(structs[1])>0 and is_valid_stack(structs[1],valor),
+                estructura[2] and len(structs[2])>0 and is_valid_p_queue(structs[2],valor)
             ]
             contador = estructura.count(True)
 
