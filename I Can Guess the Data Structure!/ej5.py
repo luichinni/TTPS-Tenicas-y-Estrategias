@@ -1,76 +1,54 @@
 from sys import stdin
+from collections import deque
 
-def is_valid_queue(inside: list, v_out:int)->bool:
-    if (inside[0] == v_out):
-        inside.pop(0)
-        return True
-    return False
+entrada = [[int(num) for num in linea.split()] for linea in stdin]
 
-def is_valid_stack(inside: list, v_out:int)->bool:
-    if (inside[-1] == v_out):
-        inside.pop()
-        return True
-    return False
+linea_actual = 0
 
-def is_valid_p_queue(inside: list, v_out:int)->bool:
-    m = max_index(inside)
-    if (inside[m] == v_out):
-        inside.pop(m)
-        return True
-    return False
+while (linea_actual < len(entrada)):
+    casos = entrada[linea_actual][0]
+    linea_actual+=1
 
-def max_index(arr: list):
-    maximo = -1
-    indice = -1
-    for indx in range(len(arr)):
-        if (arr[indx] > maximo):
-            maximo = arr[indx]
-            indice = indx
-    return indice
-    
+    valida = [True] * 3
 
-msg = ['queue','stack','priority queue']
+    cola = deque()
+    pila = []
+    cola_p = []
 
-comparator = ''
-
-
-
-for linea in stdin:
-    casos = int(linea)
-
-    estructura = [True] * 3
-
-    contador = 3
-
-    structs = [[],[],[]]
-
-    I = 0
-
-    while (I < casos and contador > 0):
-        cmd, valor = input().split(' ')
-        cmd = int(cmd)
-        valor = int(valor)
-        if cmd == 1:
-            for K in range(3):
-                if estructura[K]: structs[K].append(valor)
+    linea_ant = linea_actual-1
+    while (linea_actual < linea_ant+casos and any(valida)):
+        if (entrada[linea_actual][0] == 1):
+            cola.append(entrada[linea_actual][1])
+            pila.append(entrada[linea_actual][1])
+            cola_p.append(entrada[linea_actual][1])
         else:
-            estructura = [
-                estructura[0] and len(structs[0])>0 and is_valid_queue(structs[0],valor),
-                estructura[1] and len(structs[1])>0 and is_valid_stack(structs[1],valor),
-                estructura[2] and len(structs[2])>0 and is_valid_p_queue(structs[2],valor)
-            ]
-            contador = estructura.count(True)
-
-        I+=1
+            if not entrada[linea_actual][1] in cola or entrada[linea_actual][1] in pila or entrada[linea_actual][1] in cola_p:
+                valida = [False] * 3
+            else:
+                if valida[0]:
+                    if cola.popleft() != entrada[linea_actual][1]:
+                        valida[0] = False
+                if valida[1]:
+                    if pila.pop() != entrada[linea_actual][1]:
+                        valida[1] = False
+                if valida[2]:
+                    if max(cola_p) != entrada[linea_actual][1]:
+                        valida[2] = False
+                    else:
+                        cola_p.remove(max(cola_p))
+        
+        linea_actual+=1
     
-    for J in range(casos - I):
-        input()
-
-    if contador > 1:
-        comparator += 'not sure\n'
-    elif contador == 0:
-        comparator += 'imposible\n'
+    linea_actual += casos - 1
+    
+    if (valida.count(True) == 0):
+        print('impossible')
+    elif (valida.count(True) > 1):
+        print('not sure')
     else:
-        comparator += msg[estructura.index(True)]+'\n'
-
-print(comparator)
+        if valida[0]:
+            print('queue')
+        elif valida[1]:
+            print('stack')
+        else:
+            print('priority queue')
