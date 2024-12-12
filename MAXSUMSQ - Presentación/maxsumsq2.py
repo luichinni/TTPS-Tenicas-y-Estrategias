@@ -18,20 +18,18 @@ for _ in range(tests):
         
         maximo = max(suma_actual, maximo)
 
+    # hago suma de prefijos para contar arreglos con cierta propiedad
     acumulado = 0
     aparecidos = {}
     aparecidos[0] = 1
     ocurrencias = 0
 
     for num in num_arr:
-        acumulado += num # acumulado
-        key = acumulado - maximo
-        """
-        si max = suma_actual + num => num = suma_actual - maximo
-        entonces siguiendo esto, 
-        """
-        if key in aparecidos:
-            ocurrencias += aparecidos[key]
+        acumulado += num
+        diferencia = acumulado - maximo
+        
+        if diferencia in aparecidos:
+            ocurrencias += aparecidos[diferencia]
 
         if acumulado in aparecidos:
             aparecidos[acumulado] += 1
