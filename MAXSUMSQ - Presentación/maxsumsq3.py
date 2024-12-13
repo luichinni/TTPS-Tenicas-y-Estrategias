@@ -1,5 +1,14 @@
 from sys import stdin, stdout
 
+def actualizar(nuevo, viejo, contador, aumento = 1):
+    if nuevo > viejo:
+        contador = 0
+        viejo = nuevo
+    elif nuevo == viejo:
+        contador += aumento
+
+    return (viejo, contador)
+
 rta = []
 
 tests = int(stdin.readline())
@@ -9,28 +18,26 @@ for _ in range(tests):
 
     num_arr = [int(elem) for elem in stdin.readline().split()]
 
-    maximo = num_arr[0]
-    suma_actual = num_arr[0]
-    sumas = {}
-    sumas[num_arr[0]] = 1
+    maximo = -float("inf")
+    suma_actual = 0
+    contador = 0
 
-    for I in range(1,tam_arr):
+    for I in range(0,tam_arr):
         # busco la suma maxima de subsecuencia, algoritmo de kadane
-        suma_actual = max(suma_actual + num_arr[I], num_arr[I])
-        
-        # registro los maximos para luego buscar cual tiene más ocurrencias
-        if suma_actual > maximo:
-            maximo = suma_actual
-            sumas[maximo] = 1
-        elif suma_actual == maximo:
-            sumas[maximo] += 1
-            
-    max_count = 1
-    for sum_val, count in sumas.items():
-        if count > max_count:
-            max_count = count
-            maximo = sum_val
+        # suma_actual = max(suma_actual + num_arr[I], num_arr[I])
+        if suma_actual + num_arr[I] > num_arr[I]:
+            suma_actual+=num_arr[I]
+            maximo, contador = actualizar(suma_actual, maximo, contador)
 
-    rta.append("{} {}".format(maximo, max_count))
+        elif suma_actual + num_arr[I] == num_arr[I]:
+            suma_actual = num_arr[I]
+            maximo, contador = actualizar(suma_actual, maximo, contador, 2)
+
+        else:
+            suma_actual = num_arr[I]
+            maximo, contador = actualizar(suma_actual, maximo, contador)
+
+
+    rta.append("{} {}".format(maximo, contador))
 
 stdout.write("\n".join(rta) + "\n")
