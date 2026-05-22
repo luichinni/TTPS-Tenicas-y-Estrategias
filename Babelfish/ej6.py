@@ -2,7 +2,7 @@ from sys import stdin
 
 linea = input()
 
-dick = {}
+dicc = {}
 
 while(linea.rstrip() != ''):
     palabra, traduccion = linea.split(' ')
@@ -13,8 +13,8 @@ mensaje = ''
 
 for line in stdin:
     line = line.rstrip()
-    if (line in dick.keys()):
-        mensaje += dick[line] + '\n'
+    if (line in dicc.keys()):
+        mensaje += dicc[line] + '\n'
     else:
         mensaje += 'eh\n'
 

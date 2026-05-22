@@ -20,7 +20,6 @@ for _ in range(tests):
         # y la posición actual
         acumulado += num
         diferencia = acumulado - maximo 
-        
         # si existe una diferencia en acumulados pasados quiere decir
         # que ya existe un acumulado que junto al acumulado actual
         # obtenemos el máximo
@@ -33,6 +32,5 @@ for _ in range(tests):
             acumulados_pasados[acumulado] += 1
         else:
             acumulados_pasados[acumulado] = 1
-    
     rta.append("{} {}".format(maximo, ocurrencias))
 stdout.write("\n".join(rta) + "\n")
